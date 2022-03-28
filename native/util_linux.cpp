@@ -23,6 +23,7 @@ void X_XMoveResizeWindow(unsigned long browserHandle,
                          unsigned int height) {
   ::Display* xdisplay = (::Display*)TempWindow::GetDisplay();
   XMoveResizeWindow(xdisplay, browserHandle, 0, 0, width, height);
+  XFlush(xdisplay);
 }
 
 void X_XReparentWindow(unsigned long browserHandle,
