@@ -23,12 +23,19 @@ void X_XMoveResizeWindow(unsigned long browserHandle,
                          unsigned int height) {
   ::Display* xdisplay = (::Display*)TempWindow::GetDisplay();
   XMoveResizeWindow(xdisplay, browserHandle, 0, 0, width, height);
+  XFlush(xdisplay);
 }
 
 void X_XReparentWindow(unsigned long browserHandle,
                        unsigned long parentDrawable) {
   ::Display* xdisplay = (::Display*)TempWindow::GetDisplay();
   XReparentWindow(xdisplay, browserHandle, parentDrawable, 0, 0);
+  XFlush(xdisplay);
+}
+
+void X_XSync(bool discard) {
+  ::Display* xdisplay = (::Display*)TempWindow::GetDisplay();
+  XSync(xdisplay, discard);
 }
 
 }  // namespace
@@ -52,12 +59,16 @@ CefWindowHandle GetWindowHandle(JNIEnv* env, jobject canvas) {
 
 void SetParent(CefWindowHandle browserHandle,
                CefWindowHandle parentHandle,
-               const base::Closure& callback) {
+               base::OnceClosure callback) {
   if (parentHandle == kNullWindowHandle)
     parentHandle = TempWindow::GetWindowHandle();
   if (parentHandle != kNullWindowHandle && browserHandle != kNullWindowHandle)
     X_XReparentWindow(browserHandle, parentHandle);
-  callback.Run();
+
+  if (!CefCurrentlyOn(TID_UI)) {
+    X_XSync(true);
+  }
+  std::move(callback).Run();
 }
 
 void SetWindowBounds(CefWindowHandle browserHandle,
