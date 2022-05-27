@@ -712,6 +712,7 @@ abstract class CefBrowser_N extends CefNativeAdapter implements CefBrowser {
     }
 
     protected final void updateUI(Rectangle contentRect, Rectangle browserRect) {
+        System.err.println("ES: updateUI: contentRect: " + contentRect.toString() + " | browserRect: " + browserRect.toString());
         try {
             N_UpdateUI(contentRect, browserRect);
         } catch (UnsatisfiedLinkError ule) {

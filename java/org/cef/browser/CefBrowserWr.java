@@ -268,10 +268,12 @@ class CefBrowserWr extends CefBrowser_N {
         component_.addHierarchyBoundsListener(new HierarchyBoundsListener() {
             @Override
             public void ancestorResized(HierarchyEvent e) {
+                System.err.println("ES: ancestorResized");
                 doUpdate();
             }
             @Override
             public void ancestorMoved(HierarchyEvent e) {
+                System.err.println("ES: ancestoreMoved");
                 doUpdate();
                 notifyMoveOrResizeStarted();
             }
@@ -279,6 +281,7 @@ class CefBrowserWr extends CefBrowser_N {
         component_.addHierarchyListener(new HierarchyListener() {
             @Override
             public void hierarchyChanged(HierarchyEvent e) {
+                System.err.println("ES: hierarchyChanged");
                 if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
                     setWindowVisibility(e.getChanged().isVisible());
                 }
